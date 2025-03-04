@@ -37,4 +37,14 @@ namespace LOBS
     }
     #endregion
 
+    #region [Enum] DataType
+    /// <summary>
+    /// 성능&발전 데이터 타입
+    /// </summary>
+    //------------------------------------------------------------------------------------------------------------------------------------------------------
+    public enum DataType
+    {
+        Base, OperateTime, Efficiency, Temperature, Co2, Weather, FineDust, System, RealTime_watt, Day_watt, Mont_watt, ReMain_watt, Now_watt 
+    }
+    #endregion
 }

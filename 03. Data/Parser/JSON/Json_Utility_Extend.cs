@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace LOBS
 {
@@ -35,7 +36,11 @@ namespace LOBS
             string json = JsonUtility.ToJson(wrapper);
             json = PrettyPrintJson(json);
             if (!path.StartsWith('/')) path = "/" + path;
-            File.WriteAllText(Application.dataPath + path, json);
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            File.WriteAllText(Application.streamingAssetsPath + path, json, Encoding.UTF8);
+#elif UNITY_ANDROID
+            File.WriteAllText(Application.persistentDataPath + path, json, Encoding.UTF8);
+#endif
             //AssetDatabase.Refresh();
         }
 
@@ -48,7 +53,11 @@ namespace LOBS
         public static T FileLoad<T>(string path)
         {
             if (!path.StartsWith('/')) path = "/" + path;
-            string json = File.ReadAllText(Application.dataPath + path);
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            string json = File.ReadAllText(Application.streamingAssetsPath + path, Encoding.UTF8);
+#elif UNITY_ANDROID
+            string json = File.ReadAllText(Application.persistentDataPath + path, Encoding.UTF8);
+#endif
             JsonWrapper<T> wrapper = JsonUtility.FromJson<JsonWrapper<T>>(json);
             return wrapper.datas[0];
         }
@@ -66,7 +75,11 @@ namespace LOBS
             string json = JsonUtility.ToJson(wrapper);
             json = PrettyPrintJson(json);
             if (!path.StartsWith('/')) path = "/" + path;
-            File.WriteAllText(Application.dataPath + path, json);
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            File.WriteAllText(Application.streamingAssetsPath + path, json, Encoding.UTF8);
+#elif UNITY_ANDROID
+            File.WriteAllText(Application.persistentDataPath + path, json, Encoding.UTF8);
+#endif
             //AssetDatabase.Refresh();
         }
 
@@ -76,17 +89,83 @@ namespace LOBS
         /// <typeparam name="T">클래스 타입</typeparam>
         /// <param name="path">경로</param>
         /// <returns>데이터 리스트 반환</returns>
+        //        public static List<T> FileLoadList<T>(string path)
+        //        {
+        //            //            if (!path.StartsWith('/')) path = "/" + path;
+        //            //#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        //            //            string json = File.ReadAllText(Application.streamingAssetsPath + path, Encoding.UTF8);
+        //            //#elif UNITY_ANDROID
+        //            //            string json = File.ReadAllText(Application.persistentDataPath + path, Encoding.UTF8);
+        //            //#endif
+        //            //            JsonWrapper<T> wrapper = JsonUtility.FromJson<JsonWrapper<T>>(json);
+        //            //            return wrapper.datas;
+
+        //            string filePath;
+        //#if UNITY_EDITOR || UNITY_STANDALONE
+        //            filePath = Path.Combine(Application.streamingAssetsPath, path);
+        //#elif UNITY_ANDROID
+        //    filePath = Path.Combine("jar:file://" + Application.dataPath + "!/assets/", path + ".Json");
+        //#elif UNITY_IOS
+        //    filePath = Path.Combine(Application.streamingAssetsPath, path);
+        //#else
+        //    filePath = null;
+        //#endif
+
+        //            string jsonData;
+        //#if UNITY_ANDROID && !UNITY_EDITOR
+        //    if (filePath.StartsWith("jar:"))
+        //    {
+        //        UnityWebRequest www = UnityWebRequest.Get(filePath);
+        //        www.SendWebRequest();
+        //        while (!www.isDone) { }
+        //        jsonData = www.downloadHandler.text;
+        //    }
+        //    else
+        //    {
+        //        jsonData = File.ReadAllText(filePath);
+        //    }
+        //#else
+        //            jsonData = File.ReadAllText(filePath);
+        //#endif
+
+        //            JsonWrapper<T> wrapper = JsonUtility.FromJson<JsonWrapper<T>>(jsonData);
+        //            return wrapper.datas;
+        //        }
+
         public static List<T> FileLoadList<T>(string path)
         {
-            if (!path.StartsWith('/')) path = "/" + path;
-            string json = File.ReadAllText(Application.dataPath + path);
+            if (path.StartsWith("/")) path = path.Substring(1);
+
+            string json = "";
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            string fullPath = Path.Combine(Application.streamingAssetsPath, path);
+            if (!File.Exists(fullPath))
+            {
+                Debug.LogError("파일이 존재하지 않습니다: " + fullPath);
+                return null;
+            }
+            json = File.ReadAllText(fullPath, Encoding.UTF8);
+#elif UNITY_ANDROID
+    string filePath = Path.Combine(Application.streamingAssetsPath, path);
+    using (UnityWebRequest www = UnityWebRequest.Get(filePath))
+    {
+        www.SendWebRequest();
+        while (!www.isDone) { } // 동기적으로 기다림
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("파일을 읽을 수 없습니다: " + www.error);
+            return null;
+        }
+        json = www.downloadHandler.text;
+    }
+#endif
             JsonWrapper<T> wrapper = JsonUtility.FromJson<JsonWrapper<T>>(json);
             return wrapper.datas;
         }
 
         /// <summary>
         /// Json 줄정리
-        /// </summary>
+        /// </summary>  
         /// <param name="json">json 형식의 텍스트</param>
         /// <returns>정리된 json 텍스트</returns>
         private static string PrettyPrintJson(string json)

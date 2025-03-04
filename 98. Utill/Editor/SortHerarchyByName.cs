@@ -12,7 +12,7 @@ namespace LOBS
 
     public class SortHerarchyByName : MonoBehaviour
     {
-        [MenuItem("LOBS/Tools/Sort Hierarchy By Name")]
+        //[MenuItem("LOBS/Tools/Sort Hierarchy By Name")]
         private static void SortHierarchy()
         {
             GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
