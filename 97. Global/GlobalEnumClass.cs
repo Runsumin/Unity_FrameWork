@@ -47,4 +47,16 @@ namespace LOBS
         Base, OperateTime, Efficiency, Temperature, Co2, Weather, FineDust, System, RealTime_watt, Day_watt, Mont_watt, ReMain_watt, Now_watt 
     }
     #endregion
+
+    #region [Enum] SoundType
+    /// <summary>
+    /// 사운드 종류 : 배경음악 , 효과음 , UI 효과음
+    /// </summary>
+    //------------------------------------------------------------------------------------------------------------------------------------------------------
+    public enum SoundType
+    {
+        BGM, Effect, UIEffect
+    }
+    #endregion
+
 }
