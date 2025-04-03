@@ -35,6 +35,19 @@ namespace LOBS
 
     }
 
+    namespace RL_Global
+    {
+        #region [Nested] User_Data
+        //------------------------------------------------------------------------------------------------------------------------------------------------------
+        [Serializable]
+        public class User_Data
+        {
+            public string User_Name;
+            public string User_Affiliation; 
+        }
+        #endregion
+    }
+
     public struct Lowdata
     {
 

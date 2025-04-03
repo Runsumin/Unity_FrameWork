@@ -25,7 +25,13 @@ namespace LOBS
         //------------------------------------------------------------------------------------------------------------------------------------------------------
         public class NPopUpBase
         {
-            public GameObject Root;
+            public Transform Root;
+            public GameObject obj;
+            public void OpenPopUp() => obj.SetActive(true);
+            public void ClosedPopUp() => obj.SetActive(false);
+
+            //public void Create_PopUp() => Instantiate(obj, Root);
+            //public void Destroy_PopUp() => Destroy(obj); 
         }
         #endregion
 
@@ -98,7 +104,7 @@ namespace LOBS
                 Destroy(gameObject);
             }
             else
-                gameObject.SetActive(false);
+                gameObject.SetActive(false);    
         }
         #endregion
 

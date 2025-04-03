@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,12 @@ namespace LOBS
     //
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    #region [Dictionary] Windows
+    [Serializable]
+    public class WindowsDic : SerializableDictionary<string, WindowBase> { }
+    #endregion
+
+
     public class WindowManager : MonoBehaviour
     {
         public static WindowManager Instance;
@@ -24,15 +31,27 @@ namespace LOBS
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Variable
         //
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        //+++++++++++++++++++++++++
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
         #region [Variable] Base
         public Image Fade_Image;
         public Canvas BaseCanvas;
         #endregion
 
-        #region [Variable] Base
-        public List<WindowBase> windows = new List<WindowBase>();
+        #region [Variable] Base      
+        public WindowsDic windows = new WindowsDic();
         #endregion
 
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -66,7 +85,7 @@ namespace LOBS
         public void GenerateWindow(WindowBase window)
         {
             window.InstantiateWindow(window.gameObject, CanvasRoot);
-            windows.Add(window);
+            //windows.Add(window);
         }
         #endregion
         #region [Window] Open
